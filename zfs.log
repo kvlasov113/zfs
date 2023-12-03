@@ -432,4 +432,38 @@ otus  special_small_blocks  0                      default
 [vagrant@zfs ~]$ exit
 
 Script done on Sun Dec  3 13:41:53 2023
+Script started on Sun Dec  3 13:51:23 2023
+[vagrant@zfs ~]$ sudo -i
+[root@zfs ~]#  wget -O otus_task2.file --no-check-certificate "https://drive.google.com/u/0/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download"
+--2023-12-03 13:51:52--  https://drive.google.com/u/0/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download
+Resolving drive.google.com (drive.google.com)... 64.233.164.194, 2a00:1450:4010:c0e::c2
+Connecting to drive.google.com (drive.google.com)|64.233.164.194|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://drive.google.com/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download [following]
+--2023-12-03 13:51:53--  https://drive.google.com/uc?id=1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG&export=download
+Reusing existing connection to drive.google.com:443.
+HTTP request sent, awaiting response... 303 See Other
+Location: https://doc-00-bo-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/193echke4pg9luf8ajpta94f4af2ugnk/1701611475000/16189157874053420687/*/1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG?e=download&uuid=68fb65bc-d851-4a07-a0f4-3268c0dc9959 [following]
+Warning: wildcards not supported in HTTP.
+--2023-12-03 13:51:57--  https://doc-00-bo-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/193echke4pg9luf8ajpta94f4af2ugnk/1701611475000/16189157874053420687/*/1gH8gCL9y7Nd5Ti3IRmplZPF1XjzxeRAG?e=download&uuid=68fb65bc-d851-4a07-a0f4-3268c0dc9959
+Resolving doc-00-bo-docs.googleusercontent.com (doc-00-bo-docs.googleusercontent.com)... 64.233.164.132, 2a00:1450:4010:c07::84
+Connecting to doc-00-bo-docs.googleusercontent.com (doc-00-bo-docs.googleusercontent.com)|64.233.164.132|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5432736 (5.2M) [application/octet-stream]
+Saving to: 'otus_task2.file'
+
+100%[==================================================================================================================================================================>] 5,432,736   44.5KB/s   in 45s    
+
+2023-12-03 13:52:43 (117 KB/s) - 'otus_task2.file' saved [5432736/5432736]
+
+[root@zfs ~]# zfs receive otus/test@today < otus_task2.file
+[root@zfs ~]# find /otus/test -name "secret_message"
+/otus/test/task1/file_mess/secret_message
+[root@zfs ~]# cat /otus/test/task1/file_mess/secret_message 
+https://github.com/sindresorhus/awesome
+[root@zfs ~]# ^C
+[root@zfs ~]# logout
+[vagrant@zfs ~]$ exit
+
+Script done on Sun Dec  3 13:57:48 2023
 
