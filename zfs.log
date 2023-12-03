@@ -1,0 +1,177 @@
+Last login: Sun Dec  3 08:22:06 2023 from 10.0.2.2
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ 
+[vagrant@zfs ~]$ cat zfs.log 
+Script started on Sun Dec  3 08:24:29 2023
+[vagrant@zfs ~]$ lsblk 
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   40G  0 disk 
+`-sda1   8:1    0   40G  0 part /
+sdb      8:16   0  512M  0 disk 
+sdc      8:32   0  512M  0 disk 
+sdd      8:48   0  512M  0 disk 
+sde      8:64   0  512M  0 disk 
+sdf      8:80   0  512M  0 disk 
+sdg      8:96   0  512M  0 disk 
+sdh      8:112  0  512M  0 disk 
+sdi      8:128  0  512M  0 disk 
+[vagrant@zfs ~]$ sudo -i
+[root@zfs ~]# zpool list
+The ZFS modules are not loaded.
+Try running '/sbin/modprobe zfs' as root to load them.
+[root@zfs ~]# zpool create otus1 mirror /dev/sdb /dev/sdc
+The ZFS modules are not loaded.
+Try running '/sbin/modprobe zfs' as root to load them.
+[root@zfs ~]# /sbin/modprobe zfs
+[root@zfs ~]# zpool list
+no pools available
+[root@zfs ~]# zpool create otus1 mirror /dev/sdb /dev/sdc
+[root@zfs ~]# zpool create otus2 mirror /dev/sdd /dev/sde
+[root@zfs ~]# zpool create otus3 mirror /dev/sdf /dev/sdg
+[root@zfs ~]# zpool create otus4 mirror /dev/sdh /dev/sdi
+[root@zfs ~]# zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+otus1   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
+otus2   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
+otus3   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
+otus4   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
+[root@zfs ~]# zpool status
+  pool: otus1
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	otus1       ONLINE       0     0     0
+	  mirror-0  ONLINE       0     0     0
+	    sdb     ONLINE       0     0     0
+	    sdc     ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: otus2
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	otus2       ONLINE       0     0     0
+	  mirror-0  ONLINE       0     0     0
+	    sdd     ONLINE       0     0     0
+	    sde     ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: otus3
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	otus3       ONLINE       0     0     0
+	  mirror-0  ONLINE       0     0     0
+	    sdf     ONLINE       0     0     0
+	    sdg     ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: otus4
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	otus4       ONLINE       0     0     0
+	  mirror-0  ONLINE       0     0     0
+	    sdh     ONLINE       0     0     0
+	    sdi     ONLINE       0     0     0
+
+errors: No known data errors
+[root@zfs ~]# zfs set compression=lzjb otus1
+[root@zfs ~]# zfs set compression=lz4 otus2
+[root@zfs ~]# zfs set compression=gzip-9 otus3
+[root@zfs ~]# zfs set compression=zle otus4
+[root@zfs ~]# 
+[root@zfs ~]# 
+[root@zfs ~]# 
+[root@zfs ~]# zfs get all | grep compression
+otus1  compression           lzjb                   local
+otus2  compression           lz4                    local
+otus3  compression           gzip-9                 local
+otus4  compression           zle                    local
+[root@zfs ~]# for i in {1..4}; do wget -P /otus$i https://gutenberg.org/cache/epub/2600/pg2600.converter.log; done
+--2023-12-03 08:30:05--  https://gutenberg.org/cache/epub/2600/pg2600.converter.log
+Resolving gutenberg.org (gutenberg.org)... 152.19.134.47, 2610:28:3090:3000:0:bad:cafe:47
+Connecting to gutenberg.org (gutenberg.org)|152.19.134.47|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 40997929 (39M) [text/plain]
+Saving to: '/otus1/pg2600.converter.log'
+
+100%[=======================================================================================================>] 40,997,929  1.79MB/s   in 36s    
+
+2023-12-03 08:30:42 (1.10 MB/s) - '/otus1/pg2600.converter.log' saved [40997929/40997929]
+
+--2023-12-03 08:30:42--  https://gutenberg.org/cache/epub/2600/pg2600.converter.log
+Resolving gutenberg.org (gutenberg.org)... 152.19.134.47, 2610:28:3090:3000:0:bad:cafe:47
+Connecting to gutenberg.org (gutenberg.org)|152.19.134.47|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 40997929 (39M) [text/plain]
+Saving to: '/otus2/pg2600.converter.log'
+
+100%[=======================================================================================================>] 40,997,929  1.14MB/s   in 71s    
+
+2023-12-03 08:31:53 (567 KB/s) - '/otus2/pg2600.converter.log' saved [40997929/40997929]
+
+--2023-12-03 08:31:53--  https://gutenberg.org/cache/epub/2600/pg2600.converter.log
+Resolving gutenberg.org (gutenberg.org)... 152.19.134.47, 2610:28:3090:3000:0:bad:cafe:47
+Connecting to gutenberg.org (gutenberg.org)|152.19.134.47|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 40997929 (39M) [text/plain]
+Saving to: '/otus3/pg2600.converter.log'
+
+100%[=======================================================================================================>] 40,997,929   441KB/s   in 66s    
+
+2023-12-03 08:33:00 (610 KB/s) - '/otus3/pg2600.converter.log' saved [40997929/40997929]
+
+--2023-12-03 08:33:00--  https://gutenberg.org/cache/epub/2600/pg2600.converter.log
+Resolving gutenberg.org (gutenberg.org)... 152.19.134.47, 2610:28:3090:3000:0:bad:cafe:47
+Connecting to gutenberg.org (gutenberg.org)|152.19.134.47|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 40997929 (39M) [text/plain]
+Saving to: '/otus4/pg2600.converter.log'
+
+100%[=======================================================================================================>] 40,997,929   906KB/s   in 38s    
+
+2023-12-03 08:33:38 (1.03 MB/s) - '/otus4/pg2600.converter.log' saved [40997929/40997929]
+
+[root@zfs ~]# ls -l /otus*
+/otus1:
+total 22063
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log
+
+/otus2:
+total 17992
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log
+
+/otus3:
+total 10959
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log
+
+/otus4:
+total 40066
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log
+[root@zfs ~]# zfs list
+NAME    USED  AVAIL     REFER  MOUNTPOINT
+otus1  21.7M   330M     21.6M  /otus1
+otus2  17.7M   334M     17.6M  /otus2
+otus3  10.8M   341M     10.7M  /otus3
+otus4  39.2M   313M     39.2M  /otus4
+[root@zfs ~]# logout
+[vagrant@zfs ~]$ exit
+
+Script done on Sun Dec  3 08:34:52 2023
+
